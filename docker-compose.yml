@@ -1,26 +1,25 @@
 version: '3.8'
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: haddejit/mern-frontend:latest # Use the frontend image from Docker Hub
+    container_name: frontend
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://localhost:5000
+      VITE_API_URL: http://backend:4000 # Backend service DNS name within Docker network
     depends_on:
       - backend
+    networks:
+      - app-network
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: haddejit/mern-backend:latest # Use the backend image from Docker Hub
+    container_name: backend
     ports:
       - "5000:4000"
     environment:
-      - MONGO=mongodb://mongodb:27017/Projet
-      - PORT=4000
-    
+      MONGO_URI: mongodb://mongodb:27017/Projet # MongoDB connection URI
+      PORT: 4000
     depends_on:
       - mongodb
     networks:
@@ -35,6 +34,10 @@ services:
       - mongo-data:/data/db
     networks:
       - app-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: Projet
 
 networks:
   app-network:
