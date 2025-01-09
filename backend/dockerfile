@@ -1,0 +1,25 @@
+# Base image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for efficient caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the entire application
+COPY . .
+COPY .env /app/.env
+
+
+# Set environment variable
+ENV NODE_ENV=production
+
+# Expose the application port
+EXPOSE 4000
+
+# Command to run your app
+CMD ["node", "api/index.js"]
