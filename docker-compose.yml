@@ -1,25 +1,25 @@
 version: '3.8'
 services:
   frontend:
-    image: haddejit/mern-frontend:latest # Use the frontend image from Docker Hub
+    image: haddejit/mern-frontend:latest
     container_name: frontend
     ports:
       - "3000:3000"
     environment:
-      VITE_API_URL: http://backend:4000 # Backend service DNS name within Docker network
+      - VITE_API_URL=http://backend:4000
     depends_on:
       - backend
     networks:
       - app-network
 
   backend:
-    image: haddejit/mern-backend:latest # Use the backend image from Docker Hub
+    image: haddejit/mern-backend:latest
     container_name: backend
     ports:
-      - "5000:4000"
+      - "5000:5000"
     environment:
-      MONGO_URI: mongodb://mongodb:27017/Projet # MongoDB connection URI
-      PORT: 4000
+      - MONGODB_URI=mongodb://talel:talel@mongo:27017/Projet?authSource=admin
+      - PORT=4000
     depends_on:
       - mongodb
     networks:
@@ -28,20 +28,20 @@ services:
   mongodb:
     image: mongo:6
     container_name: mongodb
+    command: mongod --bind_ip_all --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=talel
+      - MONGO_INITDB_ROOT_PASSWORD=talel
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
     networks:
       - app-network
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: Projet
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  mongo-data:
+  mongo-data: {}
