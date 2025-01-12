@@ -1,0 +1,27 @@
+replicaCount: 3
+
+image:
+  repository: haddejit/mern-backend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 4000
+
+env:
+  MONGO_URI: "mongodb://talel:talel@mongo:27017/Projet?authSource=admin"
+  PORT: "5000"
+
+ingress:
+  enabled: false
+
+serviceAccount:
+  create: true
+  name: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80

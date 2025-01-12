@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api    # Added labels at metadata level
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api # Updated to match the new label
+  template:
+    metadata:
+      labels:
+        app: api # Updated to match the new label
+    spec:
+      containers:
+      - name: backend    # Consistent container naming
+        image: haddejit/mern-backend:latest
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: configmap

@@ -1,0 +1,38 @@
+replicaCount: 3
+
+image:
+  repository: haddejit/mern-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5173
+
+env:
+  - name: REACT_APP_SERVER_URL
+    value: http://backend-service:5000
+
+ingress:
+  enabled: true
+  className: "nginx"  # Spécifiez la classe d'Ingress ici
+
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: mern-app.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+# Ajout de la configuration pour le service account
+serviceAccount:
+  create: true  # Créez un service account si nécessaire
+  name: ""  # Si vous ne voulez pas spécifier un nom spécifique, laissez vide.
+
+autoscaling:
+  enabled: false  # Par défaut, l'autoscaling est désactivé
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
